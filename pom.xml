@@ -52,6 +52,19 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<!-- JWT -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version> <!-- won't work with 0.12.6 -->
+		</dependency>
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
