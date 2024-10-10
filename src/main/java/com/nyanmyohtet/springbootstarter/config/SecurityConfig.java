@@ -83,7 +83,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
         http.authorizeRequests()
                 // public endpoints
-                .antMatchers("/api/public/**", "/api/v1/auth/**").permitAll()
+                .antMatchers(
+                        "/api/public/**",
+                        "/swagger-ui/**",        // swagger
+                        "/swagger-ui**",         // swagger
+                        "/swagger-ui.html",      // swagger
+                        "/swagger-resources/**", // swagger
+                        "/v2/api-docs/**",       // swagger
+                        "/api/v1/auth/**").permitAll()
 
                 // URL base declaration for Role base authorization
                 // .antMatchers("/api/admin/user/**").hasRole(Role.USER_ADMIN)
