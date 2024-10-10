@@ -1,7 +1,8 @@
 package com.nyanmyohtet.springbootstarter.security;
 
-import com.nyanmyohtet.springbootstarter.repository.UserRepository;
-import com.nyanmyohtet.springbootstarter.util.JwtTokenUtil;
+import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
+import com.nyanmyohtet.springbootstarter.util.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,37 +20,42 @@ import java.util.List;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
+@RequiredArgsConstructor
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtil jwtTokenUtil;
-    private final UserRepository userRepo;
-
-    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, UserRepository userRepo) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.userRepo = userRepo;
-    }
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Get authorization header and validate
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (isEmpty(header) || !header.startsWith("Bearer ")) {
+        if (isValidAuthToken(header)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // Get jwt token and validate
         final String token = header.split(" ")[1].trim();
-        if (!jwtTokenUtil.validate(token)) {
+        if (!jwtUtil.validate(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // Get user identity and set it on the spring security context
-        UserDetails userDetails = (UserDetails) userRepo
-                .findByUsername(jwtTokenUtil.getUsername(token))
-                .orElse(null);
+        SecurityContextHolder.getContext().setAuthentication(getIdentity(token, request));
+
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean isValidAuthToken(String header) {
+        return isEmpty(header) || !header.startsWith("Bearer ");
+    }
+
+    private UsernamePasswordAuthenticationToken getIdentity(String token, HttpServletRequest request) {
+        String username = jwtUtil.getUsername(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 userDetails, null,
@@ -60,7 +66,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 new WebAuthenticationDetailsSource().buildDetails(request)
         );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(request, response);
+        return authentication;
     }
 }

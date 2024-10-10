@@ -1,7 +1,10 @@
 package com.nyanmyohtet.springbootstarter.config;
 
 import com.nyanmyohtet.springbootstarter.repository.UserRepository;
-import com.nyanmyohtet.springbootstarter.security.JwtTokenFilter;
+import com.nyanmyohtet.springbootstarter.security.JwtFilter;
+import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -25,16 +28,13 @@ import java.util.List;
 
 import static java.lang.String.format;
 
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserRepository userRepository;
-    private final JwtTokenFilter jwtTokenFilter;
-
-    public SecurityConfig(UserRepository userRepository, JwtTokenFilter jwtTokenFilter) {
-        this.userRepository = userRepository;
-        this.jwtTokenFilter = jwtTokenFilter;
-    }
+    private final JwtFilter jwtFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
     // explicitly expose AuthenticationManager as a bean
     @Bean
@@ -45,14 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // configure authentication manager
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(username -> (UserDetails) userRepository
-                .findByUsername(username)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException(
-                                format("User: %s, not found", username)
-                        )
-                )
-        );
+        auth.userDetailsService(customUserDetailsService);
     }
 
     // setting password-encoding schema
@@ -101,7 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // Add JWT token filter
         http.addFilterBefore(
-                jwtTokenFilter,
+                jwtFilter,
                 UsernamePasswordAuthenticationFilter.class
         );
     }

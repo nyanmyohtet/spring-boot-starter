@@ -13,3 +13,9 @@ Template for Spring Boot Projects
   - Spring Data JPA
 - MySQL: 8.4
 - Lombok: 1.x
+
+## Run the Service
+
+```shell
+mvn clean spring-boot:run
+```
