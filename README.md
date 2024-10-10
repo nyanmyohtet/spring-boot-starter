@@ -9,6 +9,7 @@ Template for Spring Boot Projects
 - Spring: 2.x
   - Spring Boot
   - Spring Web
+  - Spring Validation
   - Spring Security with JWT
   - Spring Data JPA
 - MySQL: 8.4
