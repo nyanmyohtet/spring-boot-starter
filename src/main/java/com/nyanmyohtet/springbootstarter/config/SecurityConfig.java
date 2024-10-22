@@ -63,12 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http = http
                 .exceptionHandling()
                 .authenticationEntryPoint(
-                        (request, response, ex) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    ex.getMessage()
-                            );
-                        }
+                        (request, response, ex) -> response.sendError(
+                                HttpServletResponse.SC_UNAUTHORIZED,
+                                ex.getMessage()
+                        )
                 )
                 .and();
 
@@ -101,10 +99,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // Used by Spring Security if CORS is enabled.
     @Bean
     public CorsFilter corsFilter() {
+        // Replace with client's origin
+        String origin = "http://localhost:3000";
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000"); // Replace with client's origin
+        config.addAllowedOrigin(origin);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));
