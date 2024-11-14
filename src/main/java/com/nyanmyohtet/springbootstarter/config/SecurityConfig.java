@@ -23,6 +23,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
+@SuppressWarnings("deprecation")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtFilter jwtFilter;
