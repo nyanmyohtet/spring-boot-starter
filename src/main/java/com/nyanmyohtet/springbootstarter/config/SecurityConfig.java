@@ -1,7 +1,7 @@
 package com.nyanmyohtet.springbootstarter.config;
 
 import com.nyanmyohtet.springbootstarter.security.JwtFilter;
-import com.nyanmyohtet.springbootstarter.security.SlidingWindowRateLimitingFilter;
+import com.nyanmyohtet.springbootstarter.security.RateLimitFilter;
 import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +27,7 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final SlidingWindowRateLimitingFilter rateLimitingFilter;
+    private final RateLimitFilter rateLimitFilter;
     private final JwtFilter jwtFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -94,8 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         // Add filters
-        http.addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterAfter(jwtFilter, SlidingWindowRateLimitingFilter.class);
+        http.addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtFilter, RateLimitFilter.class);
     }
 
     // Used by Spring Security if CORS is enabled.
