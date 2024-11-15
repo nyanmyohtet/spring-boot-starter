@@ -1,5 +1,6 @@
 package com.nyanmyohtet.springbootstarter.service.impl;
 
+import com.nyanmyohtet.springbootstarter.service.TokenBucketService;
 import com.nyanmyohtet.springbootstarter.util.TimeUtil;
 import io.github.bucket4j.Bucket;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class TokenBucketService {
+public class TokenBucketServiceImpl implements TokenBucketService {
 
     @Value("${tokenBucket.bandwidth.capacity}")
     private final Integer bucketCapacity;
@@ -23,9 +24,9 @@ public class TokenBucketService {
 
     private final Map<String, Bucket> cache = new ConcurrentHashMap<>();
 
-    public TokenBucketService(@Value("${tokenBucket.bandwidth.capacity}") Integer bucketCapacity,
-                              @Value("${tokenBucket.bandwidth.time}") Integer bucketTime,
-                              @Value("${tokenBucket.bandwidth.unit}") String bucketUnit) {
+    public TokenBucketServiceImpl(@Value("${tokenBucket.bandwidth.capacity}") Integer bucketCapacity,
+                                  @Value("${tokenBucket.bandwidth.time}") Integer bucketTime,
+                                  @Value("${tokenBucket.bandwidth.unit}") String bucketUnit) {
         this.bucketCapacity = bucketCapacity;
         this.bucketTime = bucketTime;
         this.bucketUnit = bucketUnit;

@@ -1,10 +1,11 @@
 package com.nyanmyohtet.springbootstarter.security;
 
-import com.nyanmyohtet.springbootstarter.service.impl.TokenBucketService;
+import com.nyanmyohtet.springbootstarter.service.TokenBucketService;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,7 +20,6 @@ import static java.util.concurrent.TimeUnit.NANOSECONDS;
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    private static final int TOO_MANY_REQUESTS = 429;
     private static final String RATE_LIMIT_REMAINING = "X-Rate-Limit-Remaining";
     private static final String RETRY_AFTER_SECONDS = "X-Rate-Limit-Retry-After-Seconds";
 
@@ -52,7 +52,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     }
 
     private void handleRateLimitExceeded(HttpServletResponse response, ConsumptionProbe probe) throws IOException {
-        response.setStatus(TOO_MANY_REQUESTS);
+        response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
         response.setHeader(RETRY_AFTER_SECONDS, String.valueOf(NANOSECONDS.toSeconds(probe.getNanosToWaitForRefill())));
         response.getWriter().write("Rate limit exceeded. Please try again later.");
         response.getWriter().flush();
