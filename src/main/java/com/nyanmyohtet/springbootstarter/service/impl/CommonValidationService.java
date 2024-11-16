@@ -3,7 +3,11 @@ package com.nyanmyohtet.springbootstarter.service.impl;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-public class CommonValidationService {
+public final class CommonValidationService {
+
+    private CommonValidationService() {
+        throw new UnsupportedOperationException("Utility class");
+    }
 
     public static void validateString(String value, String fieldName) {
         if (value == null || value.isBlank()) {
