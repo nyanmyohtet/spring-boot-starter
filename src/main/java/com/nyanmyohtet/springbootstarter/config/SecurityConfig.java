@@ -1,6 +1,7 @@
 package com.nyanmyohtet.springbootstarter.config;
 
 import com.nyanmyohtet.springbootstarter.security.JwtFilter;
+import com.nyanmyohtet.springbootstarter.security.RateLimitFilter;
 import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final RateLimitFilter rateLimitFilter;
     private final JwtFilter jwtFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -90,11 +92,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // private endpoints
                 .anyRequest().authenticated();
 
-        // Add JWT token filter
-        http.addFilterBefore(
-                jwtFilter,
-                UsernamePasswordAuthenticationFilter.class
-        );
+
+        // Add filters
+        http.addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtFilter, RateLimitFilter.class);
     }
 
     // Used by Spring Security if CORS is enabled.
