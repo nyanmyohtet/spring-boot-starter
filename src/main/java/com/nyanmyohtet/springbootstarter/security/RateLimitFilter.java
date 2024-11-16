@@ -34,7 +34,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String clientIp = request.getRemoteAddr();
-        logger.info("Client IP Address: {}", clientIp);
+        logger.debug("Client IP Address: {}", clientIp);
 
         Bucket bucket = tokenBucketService.resolveTokenBucket(clientIp);
         ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
