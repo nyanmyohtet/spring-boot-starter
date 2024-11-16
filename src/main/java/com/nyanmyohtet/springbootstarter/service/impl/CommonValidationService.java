@@ -36,7 +36,7 @@ public final class CommonValidationService {
         String fieldName = "IP Address";
         validateString(ipAddress, fieldName);
 
-        if (!ipAddress.matches("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$")) {
+        if (!ipAddress.matches("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")) {
             throw new IllegalArgumentException("Invalid " + fieldName + " format.");
         }
     }
