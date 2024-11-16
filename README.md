@@ -6,14 +6,20 @@ Template for Spring Boot Projects
 
 - JDK: 17
 - Maven: 2.x
-- Spring: 2.x
-  - Spring Boot
-  - Spring Web
-  - Spring Validation
-  - Spring Security with JWT
-  - Spring Data JPA
+- Spring Boot: 2.x
 - MySQL: 8.4
-- Lombok: 1.x
+
+### Dependencies
+
+- Spring Boot
+- Spring Web
+- Spring Validation
+- Spring Security with JWT
+- Spring Data JPA with MySQL
+- Lombok
+- Log4j2: for application logging
+- SpringFox: for API Specification | Swagger UI
+- bucket4j: for IP-based Rate Limiting
 
 ## Run the Service
 
