@@ -20,14 +20,13 @@ public final class CommonValidationService {
     }
 
     public static void validTimeUnit(String value) {
-
         String fieldName = "Timeunit";
         validateString(value, fieldName);
 
-        TimeUnit[] timeUnitValues = TimeUnit.values();
         try {
             TimeUnit.valueOf(value);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
+            TimeUnit[] timeUnitValues = TimeUnit.values();
             throw new IllegalArgumentException(fieldName + " is not valid. Given " + value + ". Supported values are "
                     + Arrays.toString(timeUnitValues));
         }
