@@ -4,6 +4,7 @@ Template for Spring Boot Projects
 
 ## Features
 
+- [x] IP-based Rate Limiting using TokenBucket
 - [x] En/decrypt ENV variables
 
 ## Tech Stack
