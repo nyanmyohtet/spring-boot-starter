@@ -5,6 +5,7 @@ Template for Spring Boot Projects
 ## Features
 
 - [x] En/decrypt ENV variables
+- [x] Secure APIs using HTTPS
 
 ## Tech Stack
 
@@ -47,7 +48,7 @@ mvn clean spring-boot:run -Dspring-boot.run.arguments="--jasypt.encryptor.passwo
 !!! Use GitBash if you are on Windows.
 
 ```sh
-mvn jasypt:encrypt -Djasypt.plugin.path="file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password"
+mvn jasypt:encrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password
 ```
 
 #### Decrypt Properties
@@ -55,7 +56,7 @@ mvn jasypt:encrypt -Djasypt.plugin.path="file:src/main/resources/application-dev
 Decrypt credentials that are wrapped with `ENC(value)` in application.properties file.
 
 ```shell
-mvn jasypt:decrypt -Djasypt.plugin.path="file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password"
+mvn jasypt:decrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password
 ```
 
 Which would output the decrypted contents to the screen, rather than editing the file in place.
@@ -70,5 +71,8 @@ java -jar target/your-application.jar -Djasypt.encryptor.password=encryption-pas
 
 ## Swagger
 
-- http://localhost:8080/v2/api-docs
-- http://localhost:8080/swagger-ui/
+- [Swagger API Documentation](https://127.0.0.1:8443/v2/api-docs)
+- [Swagger UI](https://127.0.0.1:8443/swagger-ui/)
+
+**Note:** When accessing these URLs in development, you might see certificate warnings in your browser due to
+self-signed certificates. This is expected and you can proceed safely for development purposes.
