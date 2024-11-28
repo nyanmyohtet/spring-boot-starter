@@ -18,11 +18,14 @@ public class CustomUser {
     @JsonIgnore
     private final String password;
 
+    private final boolean enabled;
+
     @JsonCreator
     public CustomUser(@JsonProperty("id") long id, @JsonProperty("email") String username,
-                      @JsonProperty("password") String password) {
+                      @JsonProperty("password") String password, boolean enabled) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.enabled = enabled;
     }
 }

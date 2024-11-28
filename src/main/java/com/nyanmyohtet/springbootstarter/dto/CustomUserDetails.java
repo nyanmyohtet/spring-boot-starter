@@ -15,7 +15,7 @@ public final class CustomUserDetails extends CustomUser implements UserDetails {
             .unmodifiableList(AuthorityUtils.createAuthorityList("ROLE_USER"));
 
     public CustomUserDetails(User user) {
-        super(user.getId(), user.getUsername(), user.getPasswordHash());
+        super(user.getId(), user.getUsername(), user.getPasswordHash(), user.isEnabled());
     }
 
     @Override
@@ -45,6 +45,6 @@ public final class CustomUserDetails extends CustomUser implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return super.isEnabled();
     }
 }
