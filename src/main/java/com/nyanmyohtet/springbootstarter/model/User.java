@@ -26,8 +26,9 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    @Column
-    private boolean enabled;
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean enabled = true;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

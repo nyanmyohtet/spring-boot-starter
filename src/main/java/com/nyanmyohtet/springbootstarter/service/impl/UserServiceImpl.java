@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
                 .username(username)
                 .email(email)
                 .passwordHash(encodedPassword)
-                .enabled(true)
                 .build();
     }
 }
