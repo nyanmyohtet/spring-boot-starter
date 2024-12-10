@@ -50,7 +50,7 @@ public class GlobalExceptionHandlerController {
 
     @ExceptionHandler({ Exception.class, RuntimeException.class })
     public ResponseEntity<Object> handleInternalServerError(Exception ex, HttpServletRequest request) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return createErrorResponse("An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @ExceptionHandler(ConcurrentModificationException.class)
