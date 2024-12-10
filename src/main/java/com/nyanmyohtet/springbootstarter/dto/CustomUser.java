@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * A custom user representation.
@@ -16,6 +17,7 @@ public class CustomUser {
     private final String username;
 
     @JsonIgnore
+    @ToString.Exclude
     private final String password;
 
     private final boolean enabled;
