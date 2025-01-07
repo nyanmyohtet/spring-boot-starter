@@ -12,7 +12,7 @@ on:
   push:
     branches: [ "develop", "feature/cicd-setup" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "main", "develop" ]
 
 jobs:
   test:
