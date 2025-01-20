@@ -1,9 +1,12 @@
 package com.nyanmyohtet.springbootstarter.util;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Component
@@ -50,10 +53,8 @@ public class JwtUtil {
      */
     public boolean validate(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
             return true;
-        } catch (SignatureException e) {
-            throw new UnsupportedJwtException("Invalid JWT signature");
         } catch (MalformedJwtException e) {
             throw new UnsupportedJwtException("Invalid JWT token");
         } catch (ExpiredJwtException e) {
@@ -63,6 +64,11 @@ public class JwtUtil {
         } catch (IllegalArgumentException e) {
             throw new UnsupportedJwtException("JWT claims string is empty");
         }
+    }
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     /**
@@ -82,8 +88,9 @@ public class JwtUtil {
      */
     private Claims parseClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

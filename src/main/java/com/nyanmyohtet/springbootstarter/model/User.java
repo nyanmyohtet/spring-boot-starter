@@ -1,8 +1,9 @@
 package com.nyanmyohtet.springbootstarter.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,8 +24,13 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 255)
+    @JsonIgnore
+    @Column(nullable = false)
     private String passwordHash;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean enabled = true;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
