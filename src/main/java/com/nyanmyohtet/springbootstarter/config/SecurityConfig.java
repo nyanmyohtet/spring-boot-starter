@@ -39,7 +39,14 @@ public class SecurityConfig {
         // disable CSRF
         http.csrf(AbstractHttpConfigurer::disable)
                 // Set permissions on endpoints
-                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**")
+                .authorizeHttpRequests(request -> request.requestMatchers(
+                                "/swagger-ui/**",        // swagger
+                                "/swagger-ui**",         // swagger
+                                "/swagger-ui.html",      // swagger
+                                "/swagger-resources/**", // swagger
+                                "/v3/api-docs/**",       // swagger
+                                "/v3/api-docs.yaml",     // swagger
+                                "/api/v1/auth/**")
                         .permitAll())
                 // Set session management to stateless
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))

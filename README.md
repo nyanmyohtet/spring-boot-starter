@@ -20,3 +20,9 @@ Template for Spring Boot Projects
 ```shell
 mvn clean spring-boot:run
 ```
+
+## Swagger
+
+- http://localhost:8080/v3/api-docs
+- http://localhost:8080/v3/api-docs.yaml
+- http://localhost:8080/swagger-ui/index.html
