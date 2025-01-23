@@ -91,9 +91,9 @@ java -jar target/your-application.jar -Djasypt.encryptor.password=encryption-pas
 
 ## :clipboard: Swagger
 
-- [Swagger API Documentation - JSON](http://localhost:8080/v3/api-docs)
-- [Swagger API Documentation - YAML](http://localhost:8080/v3/api-docs.yaml)
-- [Swagger UI](http://localhost:8080/swagger-ui/index.html)
+- [Swagger API Documentation - JSON](https://127.0.0.1:8443/v3/api-docs)
+- [Swagger API Documentation - YAML](https://127.0.0.1:8443/v3/api-docs.yaml)
+- [Swagger UI](https://127.0.0.1:8443/swagger-ui/index.html)
 
 Swagger provides a user-friendly interface for interacting with your REST endpoints during development.
 
