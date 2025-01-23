@@ -5,13 +5,14 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ConcurrentModificationException;
 import java.util.stream.Collectors;
 
-@ControllerAdvice
+@RestControllerAdvice
+@SuppressWarnings("unused")
 public class GlobalExceptionHandlerController {
 
     @ExceptionHandler({
@@ -19,52 +20,57 @@ public class GlobalExceptionHandlerController {
             UserNotFoundException.class
     })
     public ResponseEntity<Object> handleNotFound(Exception ex, HttpServletRequest request) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+        return createErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
         return createErrorResponse(ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList()).toString(), HttpStatus.BAD_REQUEST);
+                .collect(Collectors.joining(", ")), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
+        return createErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN, request);
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleBadRequest(BadRequestException ex, HttpServletRequest request) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<Object> handleUnauthorized(UnauthorizedException ex, HttpServletRequest request) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+        return createErrorResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED, request);
     }
 
     @ExceptionHandler({ Exception.class, RuntimeException.class })
     public ResponseEntity<Object> handleInternalServerError(Exception ex, HttpServletRequest request) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return createErrorResponse("An unexpected error occurred.", HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
     @ExceptionHandler(ConcurrentModificationException.class)
     public ResponseEntity<Object> handleConflict(ConcurrentModificationException ex, HttpServletRequest request) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.CONFLICT);
+        return createErrorResponse(ex.getMessage(), HttpStatus.CONFLICT, request);
     }
 
     @ExceptionHandler(TokenRefreshException.class)
-    public ResponseEntity<Object> handleTokenRefresh(TokenRefreshException ex) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
+    public ResponseEntity<Object> handleTokenRefresh(TokenRefreshException ex, HttpServletRequest request) {
+        return createErrorResponse(ex.getMessage(), HttpStatus.FORBIDDEN, request);
     }
 
-    private ResponseEntity<Object> createErrorResponse(String message, HttpStatus status) {
-        Error error = new Error();
-        error.setMessage(message);
-        error.setStatus(status.value());
+    private ResponseEntity<Object> createErrorResponse(String message, HttpStatus status, HttpServletRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                Instant.now(),
+                status.value(),
+                status.getReasonPhrase(),
+                "",
+                message,
+                request.getRequestURI()
+        );
         return new ResponseEntity<>(error, null, status);
     }
 }

@@ -1,6 +1,7 @@
 package com.nyanmyohtet.springbootstarter.config;
 
 import com.nyanmyohtet.springbootstarter.security.JwtFilter;
+import com.nyanmyohtet.springbootstarter.security.RateLimitFilter;
 import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final RateLimitFilter rateLimitFilter;
     private final JwtFilter jwtFilter;
     private final CustomUserDetailsService customUserDetailsService;
 
@@ -52,7 +54,8 @@ public class SecurityConfig {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 // Add JWT token filter
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, RateLimitFilter.class);
         return http.build();
     }
 
@@ -81,10 +84,12 @@ public class SecurityConfig {
     // Used by Spring Security if CORS is enabled.
     @Bean
     public CorsFilter corsFilter() {
+        // Replace with client's origin
+        String origin = "http://localhost:3000";
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000"); // Replace with client's origin
+        config.addAllowedOrigin(origin);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));

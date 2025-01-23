@@ -28,6 +28,8 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<bucket4j.version>8.14.0</bucket4j.version>
+		<jasypt.version>3.0.5</jasypt.version>
 		<jjwt.version>0.12.6</jjwt.version>
 		<lombok.version>1.18.36</lombok.version>
 		<springdoc.version>2.8.3</springdoc.version>
@@ -91,6 +93,13 @@
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
+		<!-- IP-based Rate Limiting -->
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j_jdk17-core</artifactId>
+			<version>${bucket4j.version}</version>
+		</dependency>
+
 		<!-- Logging -->
 		<!-- log4j2 uses the disruptor to implement async operations for logging. If you happen to get errors like ClassDefNotFoundException, it might be due to missing disruptor library.-->
 		<dependency>
@@ -103,6 +112,13 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>${springdoc.version}</version>
+		</dependency>
+
+		<!-- ENV Variables En/Decryption - Jasypt -->
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>${jasypt.version}</version>
 		</dependency>
 
 		<!-- Others -->
@@ -139,6 +155,12 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<!-- Jasypt Plugin -->
+			<plugin>
+				<groupId>com.github.ulisesbocchio</groupId>
+				<artifactId>jasypt-maven-plugin</artifactId>
+				<version>${jasypt.version}</version>
 			</plugin>
 		</plugins>
 	</build>
