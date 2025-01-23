@@ -23,8 +23,13 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false, length = 255)
+    // BCrypt typically produce fixed-length outputs.
+    @Column(nullable = false, length = 60)
     private String passwordHash;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean enabled = true;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
