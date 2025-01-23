@@ -1,12 +1,14 @@
 package com.nyanmyohtet.springbootstarter.util;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -18,7 +20,7 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long jwtExpirationMs;
 
-    public static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+    private final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     /**
      * Generate JWT token for a given username.
@@ -27,12 +29,17 @@ public class JwtUtil {
      * @return the JWT token as a String
      */
     public String generate(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(calculateExpirationDate())
-                .signWith(SIGNATURE_ALGORITHM, jwtSecret)
-                .compact();
+        try {
+            return Jwts.builder()
+                    .subject(username)
+                    .issuedAt(new Date())
+                    .expiration(calculateExpirationDate())
+                    .signWith(getSigningKey())
+                    .compact();
+        } catch (Exception e) {
+            logger.error("Error occur while generating JWT: {}", e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -67,7 +74,7 @@ public class JwtUtil {
     }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
