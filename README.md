@@ -17,8 +17,14 @@ Simple and scalable starter-kit to build powerful and organized REST projects wi
 
 - JDK: 17
 - Maven: 2.x
-- Spring Boot: 2.x
+- Spring: 3.x
+  - Spring Boot
+  - Spring Web
+  - Spring Validation
+  - Spring Security with JWT
+  - Spring Data JPA
 - MySQL: 8.4
+- Lombok: 1.18
 
 ### Dependencies
 
@@ -85,8 +91,9 @@ java -jar target/your-application.jar -Djasypt.encryptor.password=encryption-pas
 
 ## :clipboard: Swagger
 
-- [Swagger API Documentation](https://127.0.0.1:8443/v2/api-docs)
-- [Swagger UI](https://127.0.0.1:8443/swagger-ui/)
+- [Swagger API Documentation - JSON](https://127.0.0.1:8443/v3/api-docs)
+- [Swagger API Documentation - YAML](https://127.0.0.1:8443/v3/api-docs.yaml)
+- [Swagger UI](https://127.0.0.1:8443/swagger-ui/index.html)
 
 Swagger provides a user-friendly interface for interacting with your REST endpoints during development.
 

@@ -2,6 +2,10 @@ package com.nyanmyohtet.springbootstarter.security;
 
 import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
 import com.nyanmyohtet.springbootstarter.util.JwtUtil;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,10 +15,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Get authorization header and validate
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (isValidAuthToken(header)) {
+        if (!isValidAuthToken(header)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -50,7 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private boolean isValidAuthToken(String header) {
-        return isEmpty(header) || !header.startsWith("Bearer ");
+        return header != null && !isEmpty(header) && header.startsWith("Bearer ");
     }
 
     private UsernamePasswordAuthenticationToken getIdentity(String token, HttpServletRequest request) {
