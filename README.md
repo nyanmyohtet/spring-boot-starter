@@ -105,7 +105,7 @@ Structured the app with layered architecture to be modular, testable and scalabl
 Can adjust base on specific project needs.
 
 ```shell
-com.example.app
+com.nyanmyohtet.springbootstarter
 │
 ├── api/rest            // REST controllers
 ├── service             // Business logic

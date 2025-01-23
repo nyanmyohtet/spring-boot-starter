@@ -24,8 +24,8 @@ public class User {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @JsonIgnore
-    @Column(nullable = false)
+    // BCrypt typically produce fixed-length outputs.
+    @Column(nullable = false, length = 60)
     private String passwordHash;
 
     @Column(nullable = false)

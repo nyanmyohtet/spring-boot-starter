@@ -4,6 +4,7 @@ import com.nyanmyohtet.springbootstarter.security.JwtFilter;
 import com.nyanmyohtet.springbootstarter.security.RateLimitFilter;
 import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${cors.allowed-origin}")
+    private String allowedOrigin;
+
     private final RateLimitFilter rateLimitFilter;
     private final JwtFilter jwtFilter;
     private final CustomUserDetailsService customUserDetailsService;
@@ -49,13 +53,15 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",       // swagger
                                 "/v3/api-docs.yaml",     // swagger
                                 "/api/v1/auth/**")
-                        .permitAll())
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
                 // Set session management to stateless
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 // Add JWT token filter
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter, RateLimitFilter.class);
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtFilter, RateLimitFilter.class);
         return http.build();
     }
 
@@ -84,12 +90,10 @@ public class SecurityConfig {
     // Used by Spring Security if CORS is enabled.
     @Bean
     public CorsFilter corsFilter() {
-        // Replace with client's origin
-        String origin = "http://localhost:3000";
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin(origin);
+        config.addAllowedOrigin(allowedOrigin);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         config.setExposedHeaders(List.of("Authorization"));

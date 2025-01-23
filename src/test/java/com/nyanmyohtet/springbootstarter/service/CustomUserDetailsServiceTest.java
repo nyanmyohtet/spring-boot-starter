@@ -58,7 +58,7 @@ class CustomUserDetailsServiceTest {
                 UsernameNotFoundException.class,
                 () -> customUserDetailsService.loadUserByUsername(username)
         );
-        assertEquals("User not found with username: " + username, exception.getMessage());
+        assertEquals("Invalid credentials", exception.getMessage());
         verify(userRepository, times(1)).findByUsername(username);
     }
 }
