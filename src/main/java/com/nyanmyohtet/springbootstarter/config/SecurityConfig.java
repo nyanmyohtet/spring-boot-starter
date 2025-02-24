@@ -1,6 +1,6 @@
 package com.nyanmyohtet.springbootstarter.config;
 
-import com.nyanmyohtet.springbootstarter.security.JwtFilter;
+import com.nyanmyohtet.springbootstarter.security.JwtAuthFilter;
 import com.nyanmyohtet.springbootstarter.security.RateLimitFilter;
 import com.nyanmyohtet.springbootstarter.service.impl.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -33,36 +33,42 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
     @Value("${cors.allowed-origin}")
-    private String allowedOrigin;
+    private String ALLOWED_ORIGINS;
 
     private final RateLimitFilter rateLimitFilter;
-    private final JwtFilter jwtFilter;
+    private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService customUserDetailsService;
+
+    private final String[] WHITE_LIST_URLS = {
+            "/swagger-ui/**",        // swagger
+            "/swagger-ui**",         // swagger
+            "/swagger-ui.html",      // swagger
+            "/swagger-resources/**", // swagger
+            "/v3/api-docs/**",       // swagger
+            "/v3/api-docs.yaml",     // swagger
+            "/api/v1/auth/**"};
+
+    private final List<String> CORS_ALLOWED_METHODS = Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
+    private final List<String> CORS_ALLOWED_HEADERS = Arrays.asList("Authorization", "Content-Type");
+    private final List<String> CORS_EXPOSED_HEADERS = List.of("Authorization");
 
     // configure web security
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // disable CSRF
-        http.csrf(AbstractHttpConfigurer::disable)
+        // disable CSRF, JWT is immune to it
+        return http.csrf(AbstractHttpConfigurer::disable)
                 // Set permissions on endpoints
-                .authorizeHttpRequests(request -> request.requestMatchers(
-                                "/swagger-ui/**",        // swagger
-                                "/swagger-ui**",         // swagger
-                                "/swagger-ui.html",      // swagger
-                                "/swagger-resources/**", // swagger
-                                "/v3/api-docs/**",       // swagger
-                                "/v3/api-docs.yaml",     // swagger
-                                "/api/v1/auth/**")
+                .authorizeHttpRequests(auth -> auth.requestMatchers(WHITE_LIST_URLS)
                         .permitAll()
                         .anyRequest()
                         .authenticated())
                 // Set session management to stateless
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
-                // Add JWT token filter
-                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(jwtFilter, RateLimitFilter.class);
-        return http.build();
+                // Add filters
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, JwtAuthFilter.class)
+                .build();
     }
 
     // explicitly expose AuthenticationManager as a bean
@@ -93,10 +99,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin(allowedOrigin);
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        config.setExposedHeaders(List.of("Authorization"));
+        config.addAllowedOrigin(ALLOWED_ORIGINS);
+        config.setAllowedMethods(CORS_ALLOWED_METHODS);
+        config.setAllowedHeaders(CORS_ALLOWED_HEADERS);
+        config.setExposedHeaders(CORS_EXPOSED_HEADERS);
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

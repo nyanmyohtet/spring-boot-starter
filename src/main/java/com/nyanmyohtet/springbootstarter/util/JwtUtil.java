@@ -10,14 +10,16 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    @Value("${application.security.jwt.secret-key}")
+    private String secretKey;
 
-    @Value("${jwt.expiration}")
+    @Value("${application.security.jwt.expiration}")
     private long jwtExpirationMs;
 
     private final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
@@ -30,11 +32,15 @@ public class JwtUtil {
      */
     public String generate(String username) {
         try {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("username", username);
+
             return Jwts.builder()
+                    .claims(claims)
                     .subject(username)
                     .issuedAt(new Date())
                     .expiration(calculateExpirationDate())
-                    .signWith(getSigningKey())
+                    .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                     .compact();
         } catch (Exception e) {
             logger.error("Error occur while generating JWT: {}", e.getMessage());
@@ -74,7 +80,7 @@ public class JwtUtil {
     }
 
     private SecretKey getSigningKey() {
-        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
