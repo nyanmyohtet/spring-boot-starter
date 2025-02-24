@@ -22,7 +22,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor
 @Component
-public class JwtFilter extends OncePerRequestFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
@@ -30,14 +30,14 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // Get authorization header and validate
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (!isValidAuthToken(header)) {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (!isValidAuthToken(authHeader)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // Get jwt token and validate
-        final String token = header.split(" ")[1].trim();
+        final String token = authHeader.split(" ")[1].trim();
         if (!jwtUtil.validate(token)) {
             filterChain.doFilter(request, response);
             return;
