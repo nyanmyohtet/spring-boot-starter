@@ -46,6 +46,8 @@ Simple and scalable starter-kit to build powerful and organized REST projects wi
 
 Run the application locally, pass `jasypt.encryptor.password` as Spring Boot Property.
 
+> Use GitBash if you are on Windows.
+
 ```shell
 mvn clean spring-boot:run -Dspring-boot.run.arguments="--jasypt.encryptor.password=encryption-password"
 ```
@@ -65,7 +67,8 @@ Jasypt ensures sensitive configuration values like database credentials and API 
 ### Commands
 
 #### Encrypt Properties
-!!! Use GitBash if you are on Windows.
+
+> Use GitBash if you are on Windows.
 
 ```sh
 mvn jasypt:encrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password
@@ -74,6 +77,8 @@ mvn jasypt:encrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.
 #### Decrypt Properties
 
 Decrypt credentials that are wrapped with `ENC(value)` in application.properties file.
+
+> Use GitBash if you are on Windows.
 
 ```shell
 mvn jasypt:decrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password
