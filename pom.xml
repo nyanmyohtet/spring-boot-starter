@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.2</version>
+		<version>3.5.4-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.nyanmyohtet</groupId>
@@ -26,10 +26,13 @@
 		<tag/>
 		<url/>
 	</scm>
+	<prerequisites>
+		<maven>3.9.9</maven>
+	</prerequisites>
 	<properties>
 		<bucket4j.version>8.14.0</bucket4j.version>
 		<jasypt.version>3.0.5</jasypt.version>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 		<jjwt.version>0.12.6</jjwt.version>
 		<lombok.version>1.18.36</lombok.version>
 		<springdoc.version>2.8.3</springdoc.version>
@@ -163,5 +166,25 @@
 			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 
 </project>

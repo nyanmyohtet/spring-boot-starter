@@ -15,9 +15,9 @@ Simple and scalable starter-kit to build powerful and organized REST projects wi
 
 ## :rocket: Tech Stack
 
-- JDK: 17
-- Maven: 2.x
-- Spring: 3.x
+- JDK: 21
+- Maven: 3.9.9
+- Spring: 3.5.x
   - Spring Boot
   - Spring Web
   - Spring Validation
