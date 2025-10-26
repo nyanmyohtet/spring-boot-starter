@@ -15,10 +15,16 @@ Simple and scalable starter-kit to build powerful and organized REST projects wi
 
 ## :rocket: Tech Stack
 
-- JDK: 17
-- Maven: 2.x
-- Spring Boot: 2.x
+- JDK: 21
+- Maven: 3.9.9
+- Spring: 3.5.x
+  - Spring Boot
+  - Spring Web
+  - Spring Validation
+  - Spring Security with JWT
+  - Spring Data JPA
 - MySQL: 8.4
+- Lombok: 1.18
 
 ### Dependencies
 
@@ -40,6 +46,8 @@ Simple and scalable starter-kit to build powerful and organized REST projects wi
 
 Run the application locally, pass `jasypt.encryptor.password` as Spring Boot Property.
 
+> Use GitBash if you are on Windows.
+
 ```shell
 mvn clean spring-boot:run -Dspring-boot.run.arguments="--jasypt.encryptor.password=encryption-password"
 ```
@@ -59,7 +67,8 @@ Jasypt ensures sensitive configuration values like database credentials and API 
 ### Commands
 
 #### Encrypt Properties
-!!! Use GitBash if you are on Windows.
+
+> Use GitBash if you are on Windows.
 
 ```sh
 mvn jasypt:encrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password
@@ -68,6 +77,8 @@ mvn jasypt:encrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.
 #### Decrypt Properties
 
 Decrypt credentials that are wrapped with `ENC(value)` in application.properties file.
+
+> Use GitBash if you are on Windows.
 
 ```shell
 mvn jasypt:decrypt -Djasypt.plugin.path=file:src/main/resources/application-dev.properties -Djasypt.encryptor.password=encryption-password
@@ -85,8 +96,9 @@ java -jar target/your-application.jar -Djasypt.encryptor.password=encryption-pas
 
 ## :clipboard: Swagger
 
-- [Swagger API Documentation](https://127.0.0.1:8443/v2/api-docs)
-- [Swagger UI](https://127.0.0.1:8443/swagger-ui/)
+- [Swagger API Documentation - JSON](https://127.0.0.1:8443/v3/api-docs)
+- [Swagger API Documentation - YAML](https://127.0.0.1:8443/v3/api-docs.yaml)
+- [Swagger UI](https://127.0.0.1:8443/swagger-ui/index.html)
 
 Swagger provides a user-friendly interface for interacting with your REST endpoints during development.
 

@@ -1,21 +1,28 @@
 package com.nyanmyohtet.springbootstarter.util;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    @Value("${application.security.jwt.secret-key}")
+    private String secretKey;
 
-    @Value("${jwt.expiration}")
+    @Value("${application.security.jwt.expiration}")
     private long jwtExpirationMs;
 
-    public static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+    private final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
 
     /**
      * Generate JWT token for a given username.
@@ -24,12 +31,21 @@ public class JwtUtil {
      * @return the JWT token as a String
      */
     public String generate(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(calculateExpirationDate())
-                .signWith(SIGNATURE_ALGORITHM, jwtSecret)
-                .compact();
+        try {
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("username", username);
+
+            return Jwts.builder()
+                    .claims(claims)
+                    .subject(username)
+                    .issuedAt(new Date())
+                    .expiration(calculateExpirationDate())
+                    .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+                    .compact();
+        } catch (Exception e) {
+            logger.error("Error occur while generating JWT: {}", e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -50,10 +66,8 @@ public class JwtUtil {
      */
     public boolean validate(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token);
             return true;
-        } catch (SignatureException e) {
-            throw new UnsupportedJwtException("Invalid JWT signature");
         } catch (MalformedJwtException e) {
             throw new UnsupportedJwtException("Invalid JWT token");
         } catch (ExpiredJwtException e) {
@@ -63,6 +77,11 @@ public class JwtUtil {
         } catch (IllegalArgumentException e) {
             throw new UnsupportedJwtException("JWT claims string is empty");
         }
+    }
+
+    private SecretKey getSigningKey() {
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     /**
@@ -82,8 +101,9 @@ public class JwtUtil {
      */
     private Claims parseClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

@@ -13,6 +13,7 @@ import com.nyanmyohtet.springbootstarter.model.RefreshToken;
 import com.nyanmyohtet.springbootstarter.service.RefreshTokenService;
 import com.nyanmyohtet.springbootstarter.service.UserService;
 import com.nyanmyohtet.springbootstarter.util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +27,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
 @RequiredArgsConstructor
-@RestController @RequestMapping("/api/v1/auth")
+@RestController
+@RequestMapping("/api/v1/auth")
 public class AuthRestController {
 
     private final AuthenticationManager authenticationManager;

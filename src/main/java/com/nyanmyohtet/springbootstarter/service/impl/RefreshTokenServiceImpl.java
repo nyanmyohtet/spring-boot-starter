@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    @Value("${jwt.refreshExpirationMs}")
+    @Value("${application.security.jwt.refreshExpirationMs}")
     private Long refreshTokenDurationMs;
 
     private final RefreshTokenRepository refreshTokenRepository;
